@@ -35,6 +35,13 @@ class Builder:
     def link(self, a, b):
         self.tree.links.new(a, b)
 
+    def g(self, idname, ins=None, label=None, **attrs):
+        """Create a node, setting inputs from a {name_or_index: value_or_socket} dict."""
+        n = self.new(idname, label=label, **attrs)
+        for k, v in (ins or {}).items():
+            self.set(n.inputs[k], v)
+        return n
+
     # -- math -----------------------------------------------------------------
     def math(self, op, *args, clamp=False):
         n = self.new("ShaderNodeMath", operation=op, use_clamp=clamp)
@@ -76,8 +83,21 @@ class Builder:
         return n.outputs[0]
 
 
-def socket(tree, name, in_out, stype, default=None, lo=None, hi=None, desc="", subtype=None):
-    s = tree.interface.new_socket(name, in_out=in_out, socket_type=stype, description=desc)
+def set_menu(sock, value):
+    """Set a menu socket from an identifier like "BOTTOM_BASELINE" or a name like "Bottom Baseline"."""
+    words = value.replace("_", " ")
+    for cand in (value, words.title(), words.capitalize(), words.upper().replace(" ", "_")):
+        try:
+            sock.default_value = cand
+            return
+        except TypeError:
+            pass
+    raise ValueError(f"{value!r} not in menu {sock.name}")
+
+
+def socket(tree, name, in_out, stype, default=None, lo=None, hi=None, desc="", subtype=None, parent=None):
+    kw = {"parent": parent} if parent is not None else {}
+    s = tree.interface.new_socket(name, in_out=in_out, socket_type=stype, description=desc, **kw)
     if default is not None and hasattr(s, "default_value"):
         s.default_value = default
     if lo is not None and hasattr(s, "min_value"):

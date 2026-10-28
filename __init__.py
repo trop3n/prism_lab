@@ -2,9 +2,9 @@
 
 import bpy
 
-from . import glass, ripple
+from . import datapoints, glass, ripple
 
-modules = (glass, ripple)
+modules = (glass, ripple, datapoints)
 
 
 class PRISM_PT_main(bpy.types.Panel):
@@ -40,7 +40,19 @@ class PRISM_PT_ripple(bpy.types.Panel):
         ripple.draw(self.layout, context)
 
 
-panels = (PRISM_PT_main, PRISM_PT_glass, PRISM_PT_ripple)
+class PRISM_PT_data(bpy.types.Panel):
+    bl_space_type = "VIEW_3D"
+    bl_region_type = "UI"
+    bl_category = "Prism Lab"
+    bl_label = "Data Points"
+    bl_parent_id = "PRISM_PT_main"
+    bl_options = {"DEFAULT_CLOSED"}
+
+    def draw(self, context):
+        datapoints.draw(self.layout, context)
+
+
+panels = (PRISM_PT_main, PRISM_PT_glass, PRISM_PT_ripple, PRISM_PT_data)
 
 
 def register():
