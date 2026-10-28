@@ -2,9 +2,9 @@
 
 import bpy
 
-from . import datapoints, glass, ripple
+from . import datapoints, fx, glass, ripple
 
-modules = (glass, ripple, datapoints)
+modules = (glass, ripple, datapoints, fx)
 
 
 class PRISM_PT_main(bpy.types.Panel):
@@ -50,9 +50,36 @@ class PRISM_PT_data(bpy.types.Panel):
 
     def draw(self, context):
         datapoints.draw(self.layout, context)
+        if datapoints.find_overlay(context.object):
+            box = self.layout.box()
+            fx.draw_glow(box, context)
 
 
-panels = (PRISM_PT_main, PRISM_PT_glass, PRISM_PT_ripple, PRISM_PT_data)
+class PRISM_PT_blur(bpy.types.Panel):
+    bl_space_type = "VIEW_3D"
+    bl_region_type = "UI"
+    bl_category = "Prism Lab"
+    bl_label = "Optic Blur"
+    bl_parent_id = "PRISM_PT_main"
+    bl_options = {"DEFAULT_CLOSED"}
+
+    def draw(self, context):
+        fx.draw_blur(self.layout, context)
+
+
+class PRISM_PT_glow(bpy.types.Panel):
+    bl_space_type = "VIEW_3D"
+    bl_region_type = "UI"
+    bl_category = "Prism Lab"
+    bl_label = "Glow"
+    bl_parent_id = "PRISM_PT_main"
+    bl_options = {"DEFAULT_CLOSED"}
+
+    def draw(self, context):
+        fx.draw_glow(self.layout, context)
+
+
+panels = (PRISM_PT_main, PRISM_PT_glass, PRISM_PT_ripple, PRISM_PT_data, PRISM_PT_blur, PRISM_PT_glow)
 
 
 def register():
