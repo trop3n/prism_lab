@@ -1,0 +1,14 @@
+schema_version = "1.0.0"
+
+id = "prism_lab"
+version = "0.1.0"
+name = "Prism Lab"
+tagline = "Patterned glass, surface ripples, data overlays and optic blur"
+maintainer = "Jason Kim"
+type = "add-on"
+
+tags = ["Material", "Geometry Nodes", "Object"]
+
+blender_version_min = "5.2.0"
+
+license = ["SPDX:GPL-3.0-or-later"]
