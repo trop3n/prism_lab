@@ -505,9 +505,11 @@ def draw(layout, context):
     col = layout.column(align=True)
     col.prop(s, "dispersion"); col.prop(s, "haze"); col.prop(s, "mix")
 
-    box = layout.box()
-    box.label(text="Builds up over time: play from the start frame.", icon="INFO")
-    box.label(text="Shows in renders (F12), not the viewport compositor.")
+    col = layout.box().column(align=True)
+    col.label(text="Builds up over time:", icon="INFO")
+    col.label(text="play from the start frame.")
+    col.label(text="Renders only (F12), not")
+    col.label(text="the viewport compositor.")
     layout.operator("prism.remove_fluid", icon="X")
 
 
