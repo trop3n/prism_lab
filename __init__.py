@@ -2,9 +2,9 @@
 
 import bpy
 
-from . import datapoints, fx, glass, ripple
+from . import datapoints, fluid, fx, glass, ripple
 
-modules = (glass, ripple, datapoints, fx)
+modules = (glass, ripple, datapoints, fx, fluid)
 
 
 class PRISM_PT_main(bpy.types.Panel):
@@ -79,7 +79,20 @@ class PRISM_PT_glow(bpy.types.Panel):
         fx.draw_glow(self.layout, context)
 
 
-panels = (PRISM_PT_main, PRISM_PT_glass, PRISM_PT_ripple, PRISM_PT_data, PRISM_PT_blur, PRISM_PT_glow)
+class PRISM_PT_fluid(bpy.types.Panel):
+    bl_space_type = "VIEW_3D"
+    bl_region_type = "UI"
+    bl_category = "Prism Lab"
+    bl_label = "Fluid Distortion"
+    bl_parent_id = "PRISM_PT_main"
+    bl_options = {"DEFAULT_CLOSED"}
+
+    def draw(self, context):
+        fluid.draw(self.layout, context)
+
+
+panels = (PRISM_PT_main, PRISM_PT_glass, PRISM_PT_ripple, PRISM_PT_data, PRISM_PT_blur, PRISM_PT_glow,
+          PRISM_PT_fluid)
 
 
 def register():

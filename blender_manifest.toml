@@ -1,9 +1,9 @@
 schema_version = "1.0.0"
 
 id = "prism_lab"
-version = "0.3.1"
+version = "0.4.0"
 name = "Prism Lab"
-tagline = "Patterned glass, surface ripples, data overlays and optic blur"
+tagline = "Glass, ripples, data overlays, blur, glow and fluid distortion"
 maintainer = "Jason Kim"
 type = "add-on"
 
