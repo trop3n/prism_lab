@@ -4,7 +4,7 @@ import math
 import bpy
 from bpy.props import EnumProperty, FloatProperty, FloatVectorProperty, PointerProperty
 
-from .nodes import Builder, arrange, set_menu, draw_input, get_input, modifier_inputs, set_input, socket
+from .nodes import Builder, arrange, draw_input, get_input, modifier_inputs, set_input, set_menu, socket, versioned_group
 
 GROUP_NAME = "PL Data Points"
 GROUP_VERSION = 1
@@ -346,13 +346,9 @@ BUILDERS = {
 
 
 def data_group():
-    g = bpy.data.node_groups.get(GROUP_NAME)
-    if g and g.get("pl_version") == GROUP_VERSION:
+    g, needs_build = versioned_group(GROUP_NAME, GROUP_VERSION, "GeometryNodeTree")
+    if not needs_build:
         return g
-    if g is None:
-        g = bpy.data.node_groups.new(GROUP_NAME, "GeometryNodeTree")
-    g.interface.clear()
-    g["pl_version"] = GROUP_VERSION
     g.is_modifier = True
 
     socket(g, "Geometry", "INPUT", "NodeSocketGeometry")

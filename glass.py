@@ -6,7 +6,7 @@ import bpy
 from bpy.props import (BoolProperty, EnumProperty, FloatProperty,
                        FloatVectorProperty, PointerProperty)
 
-from .nodes import Builder, arrange, socket
+from .nodes import Builder, arrange, socket, versioned_group
 
 PATTERN_VERSION = 1
 TAU = math.tau
@@ -89,14 +89,9 @@ def _pattern_height(b, kind, co, us, vs, scale):
 
 
 def pattern_group(kind):
-    name = f"PL Glass Pattern · {kind.title()}"
-    g = bpy.data.node_groups.get(name)
-    if g and g.get("pl_version") == PATTERN_VERSION:
+    g, needs_build = versioned_group(f"PL Glass Pattern · {kind.title()}", PATTERN_VERSION, "ShaderNodeTree")
+    if not needs_build:
         return g
-    if g is None:
-        g = bpy.data.node_groups.new(name, "ShaderNodeTree")
-    g.interface.clear()
-    g["pl_version"] = PATTERN_VERSION
 
     socket(g, "Scale", "INPUT", "NodeSocketFloat", 30.0, 0.0)
     socket(g, "Rotation", "INPUT", "NodeSocketFloat", 0.0, subtype="ANGLE")
@@ -482,7 +477,7 @@ class PRISM_OT_remove_glass(bpy.types.Operator):
 def draw(layout, context):
     obj = context.object
     row = layout.row(align=True)
-    row.operator_menu_enum("prism.add_glass_panel", "shape", text="Add Panel", icon="MESH_PLANE")
+    row.operator_menu_enum("prism.add_glass_panel", "shape", text="Add Panel", icon="MOD_SOLIDIFY")
     row.operator("prism.make_glass", text="Selected", icon="SHADING_RENDERED")
     if not obj or not obj.prism_glass.enabled:
         return
@@ -491,7 +486,7 @@ def draw(layout, context):
 
     if s.is_panel:
         box = layout.box()
-        box.label(text="Panel", icon="MESH_PLANE")
+        box.label(text="Panel", icon="MOD_SOLIDIFY")
         box.prop(s, "shape", text="")
         col = box.column(align=True)
         col.prop(s, "width"); col.prop(s, "height"); col.prop(s, "thickness")

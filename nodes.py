@@ -109,6 +109,23 @@ def socket(tree, name, in_out, stype, default=None, lo=None, hi=None, desc="", s
     return s
 
 
+def versioned_group(base, version, tree_type):
+    """Get or create the node group for this add-on version.
+
+    Each version gets its own group ("<base> v<version>") instead of rebuilding an
+    existing one in place: rebuilding regenerates socket identifiers, which would wipe
+    the settings of every modifier already using the group (e.g. in an older file).
+    Returns (group, needs_build).
+    """
+    name = f"{base} v{version}"
+    g = bpy.data.node_groups.get(name)
+    if g is not None and g.bl_idname == tree_type and g.get("pl_version") == version:
+        return g, False
+    g = bpy.data.node_groups.new(name, tree_type)
+    g["pl_version"] = version
+    return g, True
+
+
 def arrange(tree, dx=230, dy=190):
     """Lay nodes out in columns by distance from the output so the tree is readable."""
     incoming = defaultdict(list)

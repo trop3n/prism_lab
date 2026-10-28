@@ -52,8 +52,10 @@ class PL_BlurRegion(bpy.types.PropertyGroup):
                         default="ELLIPSE", update=_upd_struct)
     center_x: FloatProperty(name="X", default=0.5, soft_min=0.0, soft_max=1.0, update=_upd_values)
     center_y: FloatProperty(name="Y", default=0.5, soft_min=0.0, soft_max=1.0, update=_upd_values)
-    width: FloatProperty(name="Width", default=0.4, min=0.0, soft_max=1.5, update=_upd_values)
-    height: FloatProperty(name="Height", default=0.3, min=0.0, soft_max=1.5, update=_upd_values)
+    width: FloatProperty(name="Width", default=0.4, min=0.0, soft_max=1.5, update=_upd_values,
+                         description="Fraction of the frame width")
+    height: FloatProperty(name="Height", default=0.3, min=0.0, soft_max=1.5, update=_upd_values,
+                          description="Fraction of the frame height")
     area_rotation: FloatProperty(name="Rotation", default=0.0, subtype="ANGLE", update=_upd_values)
     follow: PointerProperty(name="Follow", type=bpy.types.Object, update=_upd_values,
                             description="Keep the area centered on this object as seen by the camera")
@@ -273,7 +275,10 @@ def sync_values(scene):
         elif mask:
             cx, cy = _area_center(scene, r)
             _set(mask.inputs["Position"], "default_value", (cx, cy))
-            _set(mask.inputs["Size"], "default_value", (r.width, r.height))
+            # The mask node measures both axes in frame widths; convert height to frame heights.
+            rs = scene.render
+            aspect = (rs.resolution_y * rs.pixel_aspect_y) / max(rs.resolution_x * rs.pixel_aspect_x, 1)
+            _set(mask.inputs["Size"], "default_value", (r.width, r.height * aspect))
             _set(mask.inputs["Rotation"], "default_value", r.area_rotation)
         trail = nodes.get(p + "TRAIL")
         if trail:

@@ -1,7 +1,7 @@
 schema_version = "1.0.0"
 
 id = "prism_lab"
-version = "0.3.0"
+version = "0.3.1"
 name = "Prism Lab"
 tagline = "Patterned glass, surface ripples, data overlays and optic blur"
 maintainer = "Jason Kim"
